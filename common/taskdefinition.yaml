@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create a task definition for a web server.
+Parameters:
+  TaskRoleName:
+    Type: String
+  ExecutionRoleName:
+    Type: String
+  Cpu:
+    Type: String
+  Memory:
+    Type: String
+  Env:
+    Type: String
+  Image:
+    Type: String
+  ContainerPort:
+    Type: String
+  ClusterName:
+    Type: String
+  SubnetIds:
+    Type: String
+  SecurityGroupId:
+    Type: String
+  
+  
+Resources:
+  ECSTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      ContainerDefinitions:
+        - Name: first-run-task
+          Image: 'httpd:2.4'
+          Essential: true
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              Protocol: http
+      Cpu: !Ref Cpu
+      Memory: !Ref Memory
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Tags:
+        - Key: environment
+          Value: !Ref Env
+      TaskRoleArn: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${TaskRoleName}
+      ExecutionRoleArn: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ExecutionRoleName}
+Outputs:
+  ECSTaskDefinition:
+    Description: The created Taskdefinition.
+    Value: !Ref ECSTaskDefinition        
