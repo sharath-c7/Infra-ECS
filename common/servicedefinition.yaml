@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Servicename: 
+    Type: String
+  ECSCluster:
+    Type: String
+  SecurityGroupId:
+    Type: String
+  SubnetIds:
+    Type: String
+  ECSTaskDefinition:
+    Type: String
+Resources:
+  ECSService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      ServiceName: !Ref ServiceName
+      Cluster: !Ref ECSCluster
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups:
+            - !Ref SecurityGroupId
+          Subnets:
+            - !Ref SubnetIds
+      TaskDefinition: !Ref ECSTaskDefinition
+      
